@@ -1,0 +1,26 @@
+!main run
+!require mkdir cp chmod unzip bash
+!def run
+    set -e
+    echo "Building"
+    mkdir -p build
+    cp do.py build/do
+    chmod +x build/do
+    pushd lib
+    unzip -o termcolor.whl
+    popd
+    cp -r lib/* build
+!def install:admin
+    set -e
+    echo "Installing"
+    cp build/do /usr/bin
+    ln -svf /usr/bin/do /usr/bin/sbuild
+    mkdir -p /usr/lib/dofile
+    cp -r lib/* /usr/lib/dofile
+!def clean
+    rm -rf build
+    rm -r lib/*/
+    #Clean unzipped lib folder
+!def uninstall:admin
+    rm /usr/bin/do
+    rm /usr/bin/sbuild

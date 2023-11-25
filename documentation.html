@@ -1,0 +1,35 @@
+<h1>DoFile developers guide</h1>
+
+<h2>The philosophy of the dofile</h2>
+
+<p>Makefiles are difficult to understand: the if statements don&#39;t work, nor does cd. Dofile (sbuild) allows you to create a simple and minimalistic build file for any size of app.</p>
+
+<h2>Creating a dofile</h2>
+
+<p>In a directory (preferably the root) of your project, create a file called &quot;dofile&quot;. Open it in your favourite editor</p>
+
+<p><strong>If you have Visual Studio Code, install the &quot;custom coloring&quot; plugin, set syntax highlighting to shell script, open the custom coloring control panel and paste in <em><u>{&quot;profileName&quot;:&quot;dofile&quot;,&quot;keywords&quot;:[{&quot;color&quot;:&quot;#2eb28b&quot;,&quot;keywords&quot;:[&quot;!def&quot;,&quot;!execute&quot;,&quot;!main&quot;,&quot;!require&quot;],&quot;exact&quot;:false,&quot;case&quot;:true},{&quot;color&quot;:&quot;#ff0000&quot;,&quot;keywords&quot;:[&quot;:admin&quot;],&quot;exact&quot;:true,&quot;case&quot;:true}],&quot;ranges&quot;:[]}</u></em></strong></p>
+
+<h3>Methods</h3>
+
+<p>Dofiles are made up of shell scripts in things called &quot;methods&quot;. Methods are independant from functions.<strong> Bash functions may not be used across methods, as each method is split into its own script</strong>. To make a method, type !def &lt;method name&gt;</p>
+
+<p>All code after that line until the next def or the end of the file will be part of that method. Tabbing is reccomended but not required</p>
+
+<h3>Methods requiring admin</h3>
+
+<p>Another thing make can&#39;t do- Require root for things. If a method requires root, you can force the user to do sudo by adding the admin tag to the def statement. For example, if the method run needs admin, you would input !def run:admin</p>
+
+<p>&lt;code&gt;</p>
+
+<h3>Main methods</h3>
+
+<p>At the top of your dofile, you must declare a main method that will be executed if no specific method is provided by the user. Typically, this should be the method that builds and does not install, but you can set it to whatever method you want</p>
+
+<h3>Dependancies</h3>
+
+<p>Another thing: dependancies without all of that automake rubbish. At the top of your do file on a new line, type !require &lt;cmd1&gt; &lt;cmd2&gt; &lt;cmd3&gt; ... Dofile will check that these commands exist before doing anything. Commands with spaces are not yet supported.</p>
+
+<h3>Code</h3>
+
+<p>The code in the methods is fully functional bash scripts.</p>
