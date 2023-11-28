@@ -1,13 +1,14 @@
 #!/usr/bin/python3
-
 import os
 import sys
 import random
 from shutil import which
-
 def check_requirement(command:str):
     return which(command) is not None
-
+def print_red(text):
+    print("\033[31m"+text+"\033[0m")
+def print_green(text):
+    print("\033[32m"+text+"\033[0m")
 tmpdirname = "/tmp/dofile-"+hex(random.randint(0,1000000))[2:]
 data = """
 $$DATA$$
@@ -61,18 +62,18 @@ for req in requirements:
     if not check_requirement(req):
         missingreq.append(req)
 if len(missingreq) != 0:
-    print(f"ERROR! The following dependencies were not met: {missingreq}")
+    print_red(f"ERROR! The following dependencies were not met: {missingreq}")
     sys.exit(-1)
 if len(sys.argv) >= 2:
     rec = sys.argv[1]
     if not rec in functionblocks:
-        print("ERROR! dofile does not contain the provided method")
+        print_red("ERROR! dofile does not contain the provided method")
         sys.exit(-1)
     l = os.system(f"bash {tmpdirname}/{rec}.sh")
     if l != 0:
-        print("ERROR! Execution failed")
+        print_red("ERROR! Execution failed")
     else:
-        print("Success!")
+        print_green("Success!")
 else:
 
     if main == "":
@@ -81,6 +82,6 @@ else:
     #Execute
     l = os.system(f"bash {tmpdirname}/{main}.sh")
     if l != 0:
-        print("ERROR! Execution failed")
+        print_red("ERROR! Execution failed")
     else:
-        print("Success!")
+        print_green("Success!")

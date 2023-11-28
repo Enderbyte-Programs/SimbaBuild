@@ -8,6 +8,12 @@ from shutil import which
 def check_requirement(command:str):
     return which(command) is not None
 
+def print_red(text):
+    print("\033[31m"+text+"\033[0m")
+
+def print_green(text):
+    print("\033[32m"+text+"\033[0m")
+
 if "--help" in sys.argv or "--version" in sys.argv:
     print("""
 dofile (sbuild)
@@ -26,7 +32,7 @@ Usage: sbuild (method|--help|--version|%package)
     sys.exit()
 
 if not os.path.isfile(os.getcwd()+"/dofile"):
-    print("ERROR! Failed to find dofile. Make sure you are in the same directory as the dofile.")
+    print_red("ERROR! Failed to find dofile. Make sure you are in the same directory as the dofile.")
     sys.exit(-1)
 else:
     tmpdirname = "/tmp/dofile-"+hex(random.randint(0,1000000))[2:]
@@ -87,12 +93,12 @@ else:
                     with open("template.py") as f:
                         template = f.read()
                 else:
-                    print("ERROR! Failed to find template")
+                    print_red("ERROR! Failed to find template")
                     sys.exit(-1)
             with open(outfile,"w+") as f:
                 f.write(template.replace("$$DATA$$",data))
             os.chmod(outfile,0o777)
-            print("Success!")
+            print_green("Success!")
             sys.exit()
 
     missingreq = []
@@ -100,28 +106,28 @@ else:
         if not check_requirement(req):
             missingreq.append(req)
     if len(missingreq) != 0:
-        print(f"ERROR! The following dependencies were not met: {missingreq}")
+        print_red(f"ERROR! The following dependencies were not met: {missingreq}")
         sys.exit(-1)
     if len(sys.argv) >= 2:
         rec = sys.argv[1]
         if not rec in functionblocks:
-            print("ERROR! dofile does not contain the provided method")
+            print_red("ERROR! dofile does not contain the provided method")
             sys.exit(-1)
         l = os.system(f"bash {tmpdirname}/{rec}.sh")
         if l != 0:
-            print("ERROR! Execution failed")
+            print_red("ERROR! Execution failed")
             sys.exit(l)
         else:
-            print("Success!")
+            print_green("Success!")
     else:
 
         if main == "":
-            print("ERROR! dofile does not declare a main method")
+            print_red("ERROR! dofile does not declare a main method")
             sys.exit(-1)
         #Execute
         l = os.system(f"bash {tmpdirname}/{main}.sh")
         if l != 0:
-            print("ERROR! Execution failed")
+            print_red("ERROR! Execution failed")
             sys.exit(l)
         else:
-            print("Success!")
+            print_green("Success!")
