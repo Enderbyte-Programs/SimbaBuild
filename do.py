@@ -4,8 +4,6 @@ import os
 import sys
 import random
 from shutil import which
-sys.path.append("/usr/lib/dofile")
-from termcolor import colored
 
 def check_requirement(command:str):
     return which(command) is not None
@@ -16,13 +14,14 @@ dofile (sbuild)
 Simplistic bash-based build tool
 Version 1.0
 
-Usage: sbuild (method|--help|--version)
+Usage: sbuild (method|--help|--version|%package)
 
 --help          Prints help menu then exits
 --version       Prints version info then exits
 
 (nothing)       Looks for and executes main do file
 (method)        if it exists, execute the specified method in the dofile
+%package (out)  Package the dofile in the directory in to a portable python dofile
           """)
     sys.exit()
 
@@ -77,31 +76,51 @@ else:
     for it in functionblocks:
         with open(tmpdirname+"/"+it+".sh","w+") as f:
             f.write(functionblocks[it])
+    if len(sys.argv) == 3:
+        if sys.argv[1] == "%package":
+            outfile = sys.argv[2]
+            if os.path.isfile("/usr/lib/do/template.py"):
+                with open("/usr/lib/do/template.py") as f:
+                    template = f.read()
+            elif os.path.isfile("template.py"):
+                if os.path.getsize("template.py") > 2000 and os.path.getsize("template.py") < 3000:
+                    with open("template.py") as f:
+                        template = f.read()
+                else:
+                    print("ERROR! Failed to find template")
+                    sys.exit(-1)
+            with open(outfile,"w+") as f:
+                f.write(template.replace("$$DATA$$",data))
+            print("Success!")
+            sys.exit()
+
     missingreq = []
     for req in requirements:
         if not check_requirement(req):
             missingreq.append(req)
     if len(missingreq) != 0:
-        print(colored(f"ERROR! The following dependencies were not met: {missingreq}","red"))
+        print(f"ERROR! The following dependencies were not met: {missingreq}")
         sys.exit(-1)
     if len(sys.argv) >= 2:
         rec = sys.argv[1]
         if not rec in functionblocks:
-            print(colored("ERROR! dofile does not contain the provided method","red"))
+            print("ERROR! dofile does not contain the provided method")
             sys.exit(-1)
         l = os.system(f"bash {tmpdirname}/{rec}.sh")
         if l != 0:
-            print(colored("ERROR! Execution failed","red"))
+            print("ERROR! Execution failed")
+            sys.exit(l)
         else:
-            print(colored("Success!","green"))
+            print("Success!")
     else:
 
         if main == "":
-            print(colored("ERROR! dofile does not declare a main method","red"))
+            print("ERROR! dofile does not declare a main method")
             sys.exit(-1)
         #Execute
         l = os.system(f"bash {tmpdirname}/{main}.sh")
         if l != 0:
-            print(colored("ERROR! Execution failed","red"))
+            print("ERROR! Execution failed")
+            sys.exit(l)
         else:
-            print(colored("Success!","green"))
+            print("Success!")
