@@ -91,6 +91,7 @@ else:
                     sys.exit(-1)
             with open(outfile,"w+") as f:
                 f.write(template.replace("$$DATA$$",data))
+            os.chmod(outfile,0o777)
             print("Success!")
             sys.exit()
 
