@@ -1,5 +1,5 @@
 !main run
-!require mkdir cp chmod unzip bash
+!require mkdir cp chmod unzip bash python3
 !def run
     set -e
     echo "Building"

@@ -1,7 +1,11 @@
 # sbuild-dofile
 Simplistic bash-based build system
 
-## Installation
+## For Users
+
+### Installation
+
+**YOU ONLY NEED THIS IF THE PACKAGE YOU WISH TO INSTALL HAS A `dofile` INSTEAD OF A PORTABLE DOFILE**
 
 Download source code then extract. Open a terminal to the source directory. Run the following commands:
 
@@ -9,5 +13,18 @@ Download source code then extract. Open a terminal to the source directory. Run 
 python3 do.py
 sudo python3 do.py install
 ```
-## Arguments
-Arguments can only be passed to the dofile if a method is specialized rather than a main method. 
+### Arguments
+Arguments can only be passed to the dofile if a method is specialized rather than a main method. This is because there is currently no way to differentiate if what you are putting in is a method name or an argument
+
+### Visual Studio Code Syntax Highlighting
+This will be for both users and developers: If you want to have good syntax highlighting in Visual Studio code,
+
+- Install the Custom Coloring plugin
+
+- Copy this code:
+
+```{"profileName":"dofile","keywords":[{"color":"#2eb28b","keywords":["!def","!execute","!main","!require"],"exact":false,"case":true},{"color":"#ff0000","keywords":[":admin"],"exact":true,"case":true},{"color":"#901414","keywords":["!def %package"],"exact":false,"case":true}],"ranges":[]}```
+
+## For Developers!
+
+Thank you so much for considering Dofile for your project's build system. There are four keywords: !def, !execute, !main, and !require. The sbuild system is based off of methods. Each method is its own bash file, and thus has its own set of variables and functions. !def declares a new method. The code runs from !def to either the next !def or the end of the file. The code inside of the method is pure and perfect bash syntax. Directories, variables, and functions are preserved within the method. !execute can only be declared within the body of a method. !execute executes another method. !execute can provide arguments. For example `!execute abc def 123` will execute method abc with arguments def and 123. !main declares a main method. The !main statement must be at the top of the file. For example `!main run` will set the method `run` to the main method. The main method is executed automatically if no specific method is provided by the user.!require is declared at the top as well. It declares required programs that are verified before any method is run
