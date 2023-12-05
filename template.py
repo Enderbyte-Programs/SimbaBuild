@@ -10,7 +10,7 @@ def print_red(text):
 def print_green(text):
     print("\033[32m"+text+"\033[0m")
 tmpdirname = "/tmp/dofile-"+hex(random.randint(0,1000000))[2:]
-data = """
+data = """\
 $$DATA$$
 """
 functionblocks = {}#name: data
@@ -46,7 +46,10 @@ for line in data.splitlines():
         sch = True
     else:
         if line.strip().startswith("!execute"):
-            activefdata += f"bash {tmpdirname}/{line.strip().split(' ')[1]}.sh\n"
+                if len(line.strip().split(' ')) > 2:
+                    activefdata += f"bash {tmpdirname}/{line.strip().split(' ')[1]}.sh {' '.join(line.strip().split(' ')[2:])}\n"
+                else:
+                    activefdata += f"bash {tmpdirname}/{line.strip().split(' ')[1]}.sh\n"
 
         else:
             activefdata += line.strip() + "\n"
@@ -69,17 +72,15 @@ if len(sys.argv) >= 2:
     if not rec in functionblocks:
         print_red("ERROR! dofile does not contain the provided method")
         sys.exit(-1)
-    l = os.system(f"bash {tmpdirname}/{rec}.sh")
+    if len(sys.argv) >= 3:
+        l = os.system(f"bash {tmpdirname}/{rec}.sh {' '.join(sys.argv[2:])}")
+    else:
+        l = os.system(f"bash {tmpdirname}/{rec}.sh")
     if l != 0:
         print_red("ERROR! Execution failed")
     else:
         print_green("Success!")
 else:
-
-    if main == "":
-        print("ERROR! dofile does not declare a main method")
-        sys.exit(-1)
-    #Execute
     l = os.system(f"bash {tmpdirname}/{main}.sh")
     if l != 0:
         print_red("ERROR! Execution failed")

@@ -18,15 +18,15 @@ if "--help" in sys.argv or "--version" in sys.argv:
     print("""
 dofile (sbuild)
 Simplistic bash-based build tool
-Version 1.0
+Version 3
 
-Usage: sbuild (method|--help|--version|%package)
+Usage: sbuild [method|--help|--version|%package] (args)
 
 --help          Prints help menu then exits
 --version       Prints version info then exits
 
-(nothing)       Looks for and executes main do file
-(method)        if it exists, execute the specified method in the dofile
+(nothing)           Looks for and executes main do file. Notice! Args can't be passed to a default method
+(method) (*args)    if it exists, execute the specified method in the dofile with the optional args
 %package (out)  Package the dofile in the directory in to a portable python dofile
           """)
     sys.exit()
@@ -71,8 +71,10 @@ else:
             sch = True
         else:
             if line.strip().startswith("!execute"):
-                activefdata += f"bash {tmpdirname}/{line.strip().split(' ')[1]}.sh\n"
-
+                if len(line.strip().split(' ')) > 2:
+                    activefdata += f"bash {tmpdirname}/{line.strip().split(' ')[1]}.sh {' '.join(line.strip().split(' ')[2:])}\n"
+                else:
+                    activefdata += f"bash {tmpdirname}/{line.strip().split(' ')[1]}.sh\n"
             else:
                 activefdata += line.strip() + "\n"
         functionblocks[activefname] = activefdata
@@ -113,7 +115,10 @@ else:
         if not rec in functionblocks:
             print_red("ERROR! dofile does not contain the provided method")
             sys.exit(-1)
-        l = os.system(f"bash {tmpdirname}/{rec}.sh")
+        if len(sys.argv) >= 3:
+            l = os.system(f"bash {tmpdirname}/{rec}.sh {' '.join(sys.argv[2:])}")
+        else:
+            l = os.system(f"bash {tmpdirname}/{rec}.sh")
         if l != 0:
             print_red("ERROR! Execution failed")
             sys.exit(l)

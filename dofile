@@ -20,3 +20,12 @@
     rm /usr/bin/do
     rm /usr/bin/sbuild
     rm -rf /usr/lib/do
+!def argtest
+    echo Argtest one
+    echo $1
+    echo $2
+    !execute argtest2 $1 $2
+!def argtest2
+    echo Argtest 2
+    echo "${1}again"
+    echo "${2}again"

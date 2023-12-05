@@ -6,7 +6,8 @@ Simplistic bash-based build system
 Download source code then extract. Open a terminal to the source directory. Run the following commands:
 
 ```
-sudo pip3 install termcolor
 python3 do.py
 sudo python3 do.py install
 ```
+## Arguments
+Arguments can only be passed to the dofile if a method is specialized rather than a main method. 
