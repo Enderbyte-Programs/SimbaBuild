@@ -1,12 +1,12 @@
 !main build
 !require mkdir cp chmod bash python3
-!def build
+!def build "Build the program to the build folder"
     set -e
     echo "Building"
     mkdir -p build
     cp do.py build/do
     chmod +x build/do
-!def install:admin
+!def install:admin "Install the program to /usr/bin"
     set -e
     echo "Installing"
     cp build/do /usr/bin
@@ -16,11 +16,11 @@
 !def clean
     rm -rf build
     #Clean unzipped lib folder
-!def uninstall:admin
+!def uninstall:admin "Uninstall the program"
     rm /usr/bin/do
     rm /usr/bin/simbabuild
     rm -rf /usr/lib/simbabuild
-!def commit:private
+!def commit:private "Commit and push to git"
     git add .
     git commit -m $1
     git push

@@ -4,6 +4,7 @@ import os
 import sys
 import random
 from shutil import which
+from shlex import split as parse_args
 
 def check_requirement(command:str):
     return which(command) is not None
@@ -16,11 +17,11 @@ def print_green(text):
 
 if "--help" in sys.argv or "--version" in sys.argv:
     print("""
-dofile (sbuild)
-Simplistic bash-based build tool
-Version 3
+dofile (simbabuild)
+SIMplistic BAsh-based BUILD tool
+Version 4
 
-Usage: sbuild [method|--help|--version|%package] (args)
+Usage: sbuild [method|--help|--version|%package|%list] (args)
 
 --help          Prints help menu then exits
 --version       Prints version info then exits
@@ -28,6 +29,7 @@ Usage: sbuild [method|--help|--version|%package] (args)
 (nothing)           Looks for and executes main do file. Notice! Args can't be passed to a default method
 (method) (*args)    if it exists, execute the specified method in the dofile with the optional args
 %package (out)  Package the dofile in the directory in to a portable python dofile
+%list           List all methods with a short description
           """)
     sys.exit()
 
@@ -39,6 +41,7 @@ else:
     with open(os.getcwd()+"/dofile") as f:
         data = f.read()
     functionblocks = {}#name: data
+    docs = {}#name: doc
     activefname = ""
     activefdata = ""
     requirements = []
@@ -65,8 +68,14 @@ else:
         #iter
         if line.strip().startswith("!def"):
             private = False
-            activefname = line.strip().split(" ")[1].split(":")[0]
-            tags = line.strip().split(" ")[1].split(":")
+            
+            activefname = parse_args(line.strip())[1].split(":")[0]
+            prx = parse_args(line.strip())
+            if len(prx) > 2:
+                docs[activefname] = prx[2]
+            else:
+                docs[activefname] = "(no documentation)"
+            tags = parse_args(line.strip())[1].split(":")
             if "admin" in tags:
                 nad = True
             if "private" in tags:
@@ -96,7 +105,7 @@ else:
                 with open("/usr/lib/do/template.py") as f:
                     template = f.read()
             elif os.path.isfile("template.py"):
-                if os.path.getsize("template.py") > 2000 and os.path.getsize("template.py") < 3000:
+                if os.path.getsize("template.py") > 3000 and os.path.getsize("template.py") < 4000:
                     with open("template.py") as f:
                         template = f.read()
                 else:
@@ -106,6 +115,15 @@ else:
                 f.write(template.replace("$$DATA$$",data))
             os.chmod(outfile,0o777)
             print_green("Exportation completed without errors")
+            sys.exit()
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "%list":
+            dlist = [docs[z] for z in list(functionblocks.keys())]
+            klist = [list(docs.keys())[list(functionblocks.keys()).index(x)] for x in list(functionblocks.keys())]
+            maxn = max([len(d) for d in klist])
+            print("Method name".ljust(maxn)+"|Description")
+            for i in range(len(klist)):
+                print(klist[i].ljust(maxn),dlist[i])
             sys.exit()
 
     missingreq = []

@@ -1,3 +1,6 @@
+v5:
+- Add %list
+- Will list out docs
 v4:
 - Add :private tag
 - Can be used in conjunction with :admin for :admin:private
