@@ -1,3 +1,7 @@
+v4:
+- Add :private tag
+- Can be used in conjunction with :admin for :admin:private
+- Prevents method from being executed in a portable dofile
 v3:
 - Add argument support
 v2:

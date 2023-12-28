@@ -43,8 +43,10 @@ else:
     activefdata = ""
     requirements = []
     main = ""
+    private = False
     nad = False
     for line in data.splitlines():
+        
         if nad:
             activefdata += "if [ \"$EUID\" -ne 0 ]; then\n echo \"This method needs root.\"\n exit 2 \nfi\n"
         sch = False
@@ -62,12 +64,13 @@ else:
             continue
         #iter
         if line.strip().startswith("!def"):
+            private = False
             activefname = line.strip().split(" ")[1].split(":")[0]
-            try:
-                if line.strip().split(" ")[1].split(":")[1] == "admin":
-                    nad = True
-            except:
-                pass
+            tags = line.strip().split(" ")[1].split(":")
+            if "admin" in tags:
+                nad = True
+            if "private" in tags:
+                private = True
             sch = True
         else:
             if line.strip().startswith("!execute"):
@@ -77,7 +80,9 @@ else:
                     activefdata += f"bash {tmpdirname}/{line.strip().split(' ')[1]}.sh\n"
             else:
                 activefdata += line.strip() + "\n"
+
         functionblocks[activefname] = activefdata
+
         if sch:
             activefdata = ""
     os.mkdir(tmpdirname)
@@ -100,7 +105,7 @@ else:
             with open(outfile,"w+") as f:
                 f.write(template.replace("$$DATA$$",data))
             os.chmod(outfile,0o777)
-            print_green("Success!")
+            print_green("Exportation completed without errors")
             sys.exit()
 
     missingreq = []

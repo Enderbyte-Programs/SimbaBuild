@@ -11,7 +11,33 @@ def print_green(text):
     print("\033[32m"+text+"\033[0m")
 tmpdirname = "/tmp/dofile-"+hex(random.randint(0,1000000))[2:]
 data = """\
-$$DATA$$
+!main build
+!require mkdir cp chmod bash python3
+!def run:private
+    !execute build
+    build/do poc
+!def build
+    set -e
+    echo "Building"
+    mkdir -p build
+    cp do.py build/do
+    chmod +x build/do
+!def install:admin
+    set -e
+    echo "Installing"
+    cp build/do /usr/bin
+    ln -svf /usr/bin/do /usr/bin/simbabuild
+    mkdir -p /usr/lib/simbabuild
+    cp template.py /usr/lib/simbabuild
+!def clean
+    rm -rf build
+    #Clean unzipped lib folder
+!def uninstall:admin
+    rm /usr/bin/do
+    rm /usr/bin/simbabuild
+    rm -rf /usr/lib/simbabuild
+!def poc:private
+    echo "I am alive!"
 """
 functionblocks = {}#name: data
 activefname = ""

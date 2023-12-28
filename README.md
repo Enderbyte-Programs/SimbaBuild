@@ -23,7 +23,7 @@ This will be for both users and developers: If you want to have good syntax high
 
 - Copy this code:
 
-```{"profileName":"dofile","keywords":[{"color":"#2eb28b","keywords":["!def","!execute","!main","!require"],"exact":false,"case":true},{"color":"#ff0000","keywords":[":admin"],"exact":true,"case":true},{"color":"#901414","keywords":["!def %package"],"exact":false,"case":true}],"ranges":[]}```
+```{"profileName":"dofile","keywords":[{"color":"#2eb28b","keywords":["!def","!execute","!main","!require"],"exact":false,"case":true},{"color":"#ff0000","keywords":[":admin",":private"],"exact":true,"case":true},{"color":"#901414","keywords":["!def %package","!def %list"],"exact":false,"case":true}],"ranges":[]}```
 
 ## For Developers!
 
