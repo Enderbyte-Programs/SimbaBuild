@@ -10,7 +10,7 @@
     set -e
     echo "Installing"
     cp build/do /usr/bin
-    ln -svf /usr/bin/do /usr/bin/sbuild
+    ln -svf /usr/bin/do /usr/bin/simbabuild
     mkdir -p /usr/lib/do
     cp template.py /usr/lib/do
 !def clean
@@ -18,14 +18,5 @@
     #Clean unzipped lib folder
 !def uninstall:admin
     rm /usr/bin/do
-    rm /usr/bin/sbuild
+    rm /usr/bin/simbabuild
     rm -rf /usr/lib/do
-!def argtest
-    echo Argtest one
-    echo $1
-    echo $2
-    !execute argtest2 $1 $2
-!def argtest2
-    echo Argtest 2
-    echo "${1}again"
-    echo "${2}again"
