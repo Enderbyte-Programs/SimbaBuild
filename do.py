@@ -101,8 +101,8 @@ else:
     if len(sys.argv) == 3:
         if sys.argv[1] == "%package":
             outfile = sys.argv[2]
-            if os.path.isfile("/usr/lib/do/template.py"):
-                with open("/usr/lib/do/template.py") as f:
+            if os.path.isfile("/usr/lib/simbabuild/template.py"):
+                with open("/usr/lib/simbabuild/template.py") as f:
                     template = f.read()
             elif os.path.isfile("template.py"):
                 if os.path.getsize("template.py") > 3000 and os.path.getsize("template.py") < 4000:

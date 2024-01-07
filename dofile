@@ -11,6 +11,7 @@
     echo "Installing"
     cp build/do /usr/bin
     ln -svf /usr/bin/do /usr/bin/simbabuild
+    ln -svf /usr/bin/do /usr/bin/sbuild
     mkdir -p /usr/lib/simbabuild
     cp template.py /usr/lib/simbabuild
 !def clean
